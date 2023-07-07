@@ -45,9 +45,12 @@ def inference(model_inputs:dict) -> dict:
     
     if image_url == None:
         return {'message': "No image URL provided"}
-    
-    init_img = download_image(image_url)
 
+    if image_url.startswith("http://") or image_url.startswith("https://"):
+        init_img = download_image(image_url)
+    else:
+        init_img = Image.open(BytesIO(base64.b64decode(image_url))).convert("RGB")
+                
     model.enable_xformers_memory_efficient_attention()
 
     # Run the model
